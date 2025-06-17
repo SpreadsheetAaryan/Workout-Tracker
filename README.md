@@ -36,6 +36,7 @@ cd Workout-Tracker
 pip install -r requirements.txt
 python main.py
 
+```
 ## 📊 How the AI Works
 
 ### 🏋️‍♂️ Data Collection
