@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.DS_Store
+
+# Created at runtime: workout log, captured training frames, scratch frame
+fit.db
+1/
+2/
+frame.jpg

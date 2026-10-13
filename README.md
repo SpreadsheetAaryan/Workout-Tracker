@@ -1,60 +1,34 @@
-# Workout Tracker 🏋️‍♂️  
-Train, track, and analyze your workouts using computer vision and machine learning.
+# Workout Tracker
 
-[![Project Demo](https://img.shields.io/badge/Watch-Demo-red)](https://youtu.be/zd0G3uwaul4?si=89-RomV_qXvx4VIf)
+A desktop app that counts reps from your webcam and logs workouts. You teach it what the two ends of a movement look like (for example, arm extended and arm contracted in a bicep curl), it trains a small classifier on those frames, and then it counts a rep each time it sees you go from one position to the other.
 
-## Description  
-This project is a desktop-based workout tracking application built using Python, OpenCV, Tkinter, and SQLite. It allows users to train a machine learning model to recognize specific exercises using pose estimation, then track reps, sets, and workouts in real-time.
+Built in June 2025 with Python, OpenCV, Tkinter, scikit-learn and SQLite.
 
-The application uses:
-- `OpenCV` for capturing and analyzing webcam video.
-- `Tkinter` for the user interface.
-- `Scikit-learn` with `LinearSVC` for the machine learning model.
-- `SQLite` for tracking user workout data persistently.
+## How it works
 
----
+1. **Collect examples.** With the webcam running, press **Extended** or **Contracted** to save the current frame for that position. Frames are saved as 150x150 grayscale images in folders `1/` and `2/`.
+2. **Train.** **Train Model** fits a scikit-learn `LinearSVC` on the raw pixels of those frames. Each frame is augmented with a horizontal flip, a vertical flip and a 90-degree rotation.
+3. **Count.** With **Toggle Counting** on, each live frame is classified. A rep is counted once the model has seen both the extended and the contracted position.
+4. **Log.** Enter the exercise, sets, reps and date and press **Log Exercise** to save it to a local SQLite database (`fit.db`). **View Workout** shows past entries, and there is a built-in stopwatch for rest periods.
 
-## 🎯 Features
+Because the classifier works on raw pixels rather than body keypoints, it is sensitive to lighting, background and where you stand. It works best when you collect a few dozen frames of each position in the same spot you will exercise in. No accuracy numbers have been measured.
 
-- 🧠 **Train Your Own Exercise Model**: Teach the app to recognize custom workouts by recording your own movements.
-- 📈 **Real-Time Rep Counter**: Detect and count reps using webcam input.
-- 🗓️ **Workout History Tracking**: View your past workouts, sets, reps, and performance over time.
-- 🗄️ **SQL-Backed Persistence**: Store all workouts and user data in a local SQLite database.
-- 🖥️ **Simple UI**: Clean and intuitive interface using Tkinter.
-- 🎥 **Webcam-Based Feedback**: Get visual cues on form detection while exercising.
+## Run it
 
----
+Requires Python 3.9+ and a webcam.
 
-## 🛠️ Installation and Setup
-
-Follow these steps to get started:
-
-### 1. Clone the Repository
 ```bash
 git clone https://github.com/SpreadsheetAaryan/Workout-Tracker.git
 cd Workout-Tracker
 pip install -r requirements.txt
 python main.py
+```
+
+## Files
 
 ```
-## 📊 How the AI Works
-
-### 🏋️‍♂️ Data Collection
-- You can train the app on your own movements (e.g., squats, curls, etc.).
-- Pose landmarks are extracted from video frames using OpenCV.
-
-### 📐 Feature Extraction
-- Key body point angles and positions are used as features.
-- These are labeled according to your exercise (e.g., pushup, squat, curl).
-
-### 🧠 Model Training
-- A `LinearSVC` model from `scikit-learn` is trained on your labeled data.
-- Model accuracy improves the more data you provide during the training phase.
-
-### 🎯 Real-Time Tracking
-- The trained model predicts your exercise form in real-time.
-- It counts reps based on movement patterns and posture thresholds.
-
-
-
-
+main.py    entry point
+app.py     Tkinter UI, rep-counting logic, SQLite workout log
+cam.py     threaded webcam capture
+model.py   LinearSVC training and prediction on grayscale frames
+```
